@@ -13,7 +13,7 @@ RUN python -c "from downloader import download_images; download_images()"
 
 COPY . /cf
 
-VOLUME [ "/cf/CodeFormer/weights" ]
+# VOLUME [ "/cf/CodeFormer/weights" ]
 
 EXPOSE 7860
 
@@ -25,7 +25,7 @@ FROM base
 
 RUN python downloader.py
 
-VOLUME [ "/cf/CodeFormer/weights" ]
+# VOLUME [ "/cf/CodeFormer/weights" ]
 
 EXPOSE 7860
 
