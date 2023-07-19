@@ -57,6 +57,9 @@ torch.hub.download_url_to_file(
 torch.hub.download_url_to_file(
     'https://replicate.com/api/models/sczhou/codeformer/files/7cf19c2c-e0cf-4712-9af8-cf5bdbb8d0ee/012.jpg',
     '05.jpg')
+torch.hub.download_url_to_file(
+    'https://raw.githubusercontent.com/sczhou/CodeFormer/master/inputs/cropped_faces/0729.png',
+    '06.png')
 
 def imread(img_path):
     img = cv2.imread(img_path)
@@ -101,11 +104,11 @@ codeformer_net.eval()
 
 os.makedirs('output', exist_ok=True)
 
-def inference(image, background_enhance, face_upsample, upscale, codeformer_fidelity):
+def inference(image, face_align, background_enhance, face_upsample, upscale, codeformer_fidelity):
     """Run a single prediction on the model"""
     try: # global try
         # take the default setting for the demo
-        has_aligned = False
+        has_aligned = not face_align
         only_center_face = False
         draw_box = False
         detection_model = "retinaface_resnet50"
@@ -114,6 +117,7 @@ def inference(image, background_enhance, face_upsample, upscale, codeformer_fide
         background_enhance = background_enhance if background_enhance is not None else True
         face_upsample = face_upsample if face_upsample is not None else True
         upscale = upscale if (upscale is not None and upscale > 0) else 2
+        upscale = 1 if has_aligned else upscale
 
         img = cv2.imread(str(image), cv2.IMREAD_COLOR)
         print('\timage size:', img.shape)
@@ -271,6 +275,7 @@ td {
 demo = gr.Interface(
     inference, [
         gr.Image(type="filepath", label="Input"),
+        gr.Checkbox(value=True, label="Pre_Face_Align"),
         gr.Checkbox(value=True, label="Background_Enhance"),
         gr.Checkbox(value=True, label="Face_Upsample"),
         gr.Number(value=2, label="Rescaling_Factor (up to 4)"),
@@ -282,11 +287,12 @@ demo = gr.Interface(
     description=description,
     article=article,       
     examples=[
-        ['01.png', True, True, 2, 0.7],
-        ['02.jpg', True, True, 2, 0.7],
-        ['03.jpg', True, True, 2, 0.7],
-        ['04.jpg', True, True, 2, 0.1],
-        ['05.jpg', True, True, 2, 0.1]
+        ['01.png', True, True, True, 2, 0.7],
+        ['02.jpg', True, True, True, 2, 0.7],
+        ['03.jpg', True, True, True, 2, 0.7],
+        ['04.jpg', True, True, True, 2, 0.1],
+        ['05.jpg', True, True, True, 2, 0.1],
+        ['06.png', False, True, True, 1, 0.5]
       ])
 
 DEBUG = os.getenv('DEBUG') == '1'
