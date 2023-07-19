@@ -207,6 +207,8 @@ def inference(image, face_align, background_enhance, face_upsample, upscale, cod
                 restored_img = face_helper.paste_faces_to_input_image(
                     upsample_img=bg_img, draw_box=draw_box
                 )
+        else:
+            restored_img = restored_face
 
         # save restored img
         save_path = f'output/out.png'
