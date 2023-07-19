@@ -108,15 +108,17 @@ def inference(image, face_align, background_enhance, face_upsample, upscale, cod
     """Run a single prediction on the model"""
     try: # global try
         # take the default setting for the demo
-        has_aligned = not face_align
         only_center_face = False
         draw_box = False
         detection_model = "retinaface_resnet50"
-        print('Inp:', image, background_enhance, face_upsample, upscale, codeformer_fidelity)
 
+        print('Inp:', image, background_enhance, face_upsample, upscale, codeformer_fidelity)
+        face_align = face_align if face_align is not None else True
         background_enhance = background_enhance if background_enhance is not None else True
         face_upsample = face_upsample if face_upsample is not None else True
         upscale = upscale if (upscale is not None and upscale > 0) else 2
+
+        has_aligned = not face_align
         upscale = 1 if has_aligned else upscale
 
         img = cv2.imread(str(image), cv2.IMREAD_COLOR)
