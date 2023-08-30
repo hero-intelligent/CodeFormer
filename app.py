@@ -301,4 +301,5 @@ demo = gr.Interface(
 
 DEBUG = os.getenv('DEBUG') == '1'
 demo.queue(api_open=False, concurrency_count=2, max_size=10)
-demo.launch(debug=DEBUG)
+# demo.launch(debug=DEBUG)
+demo.launch(debug=DEBUG, share=True)
